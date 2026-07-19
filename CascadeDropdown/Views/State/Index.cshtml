@@ -1,0 +1,50 @@
+﻿@model IEnumerable<State>
+<p>
+    <a asp-controller="State" asp-action="Create" class="btn btn-secondary">Add</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Country</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Country.Name</td>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-controller="State" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-primary">Edit</a>
+                    <a href="/State/Delete/@item.Id" class="btn btn-danger btn-delete">Delete</a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".btn-delete").click(function (e) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+            if (confirm("are you want to delete")) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function () {
+                        alert("deleted successfully");
+                        location.reload();
+                    },
+                    error: function () {
+                        alert("Error Handling Something");
+                    }
+                })
+            }
+
+        });
+    });
+</script>

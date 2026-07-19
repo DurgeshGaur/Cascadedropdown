@@ -1,0 +1,14 @@
+﻿@model Country
+
+<form asp-controller="Country" asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id"/>
+    <div class="row">
+        <div class="col-4">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>

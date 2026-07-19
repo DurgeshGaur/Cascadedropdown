@@ -1,0 +1,94 @@
+﻿@model City
+
+<form asp-controller="City" asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="row">
+        <div class="col-4">
+            <label>Country</label>
+            <select asp-for="CountryId" id="CountryId" class="form-select" asp-items="@ViewBag.Country">
+
+                <option value="">select</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <label>State</label>
+            <select asp-for="StateId" id="StateId" class="form-select">
+
+                <option value="">select</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // $("#CountryId").change(function () {
+        //     var countryId = $("#CountryId").val();
+        //     if (countryId) {
+        //         $.ajax({
+        //             url: '/City/GetState',
+        //             type: 'GET',
+        //             data: { countryId: countryId },
+        //             success: function (data) {
+        //                 var $state = $("#StateId");
+        //                 $state.empty();
+
+        //                 $state.append('<option value="">select</option>');
+        //                 $.each(data, function (i, state) {
+        //                     $state.append('<option value= ' + state.id + '>' + state.value + '</option>');
+        //                 })
+        //             },
+        //             error: function () {
+        //                 alert("Error handling something");
+        //             }
+        //         })
+        //     }
+        //     else {
+        //         $("#StateId").empty().append('<option value="">select</select>');
+        //     }
+        // })
+        var countryId = '@Model.CountryId';
+        var stateId = '@Model.StateId';
+        debugger;
+        loadStates("CountryId", "StateId", stateId);
+
+        // When user changes country, reload state list
+        $("#CountryId").change(function () {
+            loadStates("CountryId", "StateId");
+        });
+        function loadStates(countrySelectorId, stateSelectorId, selectedStateId = null) {
+            debugger;
+            var countryId = $("#" + countrySelectorId).val();
+            var $state = $("#" + stateSelectorId);
+
+            if (countryId) {
+                $.ajax({
+                    url: '/City/GetState',
+                    type: 'GET',
+                    data: { countryId: countryId },
+                    success: function (data) {
+                        $state.empty();
+                        $state.append('<option value="">Select</option>');
+                        $.each(data, function (i, state) {
+                            var selected = (selectedStateId && state.id == selectedStateId) ? "selected" : "";
+                            $state.append('<option value="' + state.id + '" ' + selected + '>' + state.name + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert("Error loading states");
+                    }
+                });
+            } else {
+                $state.empty();
+                $state.append('<option value="">Select</option>');
+            }
+        }
+    })
+</script>

@@ -1,0 +1,107 @@
+﻿@model Employee
+
+<form asp-controller="Employee" asp-action="Create" method="post">
+    <div class="row">
+        <div class="col-4">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="col-4">
+            <label>DOB</label>
+            <input type="date" asp-for="DateTime" class="form-control" />
+        </div>
+
+        <div class="col-4">
+            <label>Email</label>
+            <input type="email" asp-for="Email" class="form-control" />
+        </div>
+
+        <div class="col-4">
+            <label>Country</label>
+            <select asp-for="CountryId" id="CountryId" class="form-select" asp-items="@ViewBag.Country">
+                <option value="">Select</option>
+            </select>
+        </div>
+
+        <div class="col-4">
+            <label>State</label>
+            <select asp-for="StateId" id="StateId" class="form-select">
+                <option value="">Select</option>
+            </select>
+        </div>
+
+        <div class="col-4">
+            <label>City</label>
+            <select asp-for="CityId" id="CityId" class="form-select">
+                <option value="">Select</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // When Country changes → Load States
+            $("#CountryId").change(function () {
+                var countryId = $(this).val();
+                if (countryId) {
+                    $.ajax({
+                        url: '/City/GetState',
+                        type: 'GET',
+                        data: { countryId: countryId },
+                        success: function (data) {
+                            var $state = $("#StateId");
+                            $state.empty().append('<option value="">Select</option>');
+                            $("#CityId").empty().append('<option value="">Select</option>'); // Reset city
+
+                            $.each(data, function (i, state) {
+                                $state.append('<option value="' + state.id + '">' + state.name + '</option>');
+                            });
+                        },
+                        error: function () {
+                            alert("Error loading states");
+                        }
+                    });
+                } else {
+                    $("#StateId").empty().append('<option value="">Select</option>');
+                    $("#CityId").empty().append('<option value="">Select</option>');
+                }
+            });
+
+            // When State changes → Load Cities
+            $("#StateId").change(function () {
+                var stateId = $(this).val();
+                if (stateId) {
+                    $.ajax({
+                        url: '/Employee/GetCity',
+                        type: 'GET',
+                        data: { stateId: stateId },
+                        success: function (data) {
+                            var $city = $("#CityId");
+                            $city.empty().append('<option value="">Select</option>');
+
+                            $.each(data, function (i, city) {
+                                $city.append('<option value="' + city.id + '">' + city.name + '</option>');
+                            });
+                        },
+                        error: function () {
+                            alert("Error loading cities");
+                        }
+                    });
+                } else {
+                    $("#CityId").empty().append('<option value="">Select</option>');
+                }
+            });
+
+        });
+    </script>
+}

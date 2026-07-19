@@ -1,0 +1,21 @@
+﻿@model State
+
+<form asp-controller="State" asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="row">
+        <div class="col-4">
+            <label>Country</label>
+            <select asp-for="CountryId" class="form-select" asp-items="@ViewBag.Country">
+
+                <option value="">select</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>
